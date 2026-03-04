@@ -1,3 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>.</title>
+
+<meta name="description" content=".">
+<meta property="og:title" content=".">
+<meta property="og:description" content=".">
+<meta property="og:type" content="website">
+
+<style>
+:root{
+  --bg: #ffffff;
+  --fg: #000000;
+}
+
+html, body{
+  margin:0;
+  width:100vw;
+  height:100vh;
+  background: var(--bg);
+  overflow:hidden;
+}
+
+body{
+  display:grid;
+  place-items:center;
+  transition: background .25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* DOT */
+.dot{
+  width:32px;
   height:32px;
   background: var(--fg);
   border-radius:50%;
@@ -58,6 +94,19 @@
   color: var(--bg);
 }
 
+.history{
+  display:block;
+  margin-top:18px;
+  font-size:14px;
+  text-decoration:none;
+  color:var(--fg);
+  opacity:0.7;
+}
+
+.history:hover{
+  opacity:1;
+}
+
 @keyframes pulseButton{
   0%{ transform: scale(1); }
   50%{ transform: scale(1.1); }
@@ -107,18 +156,26 @@ function showRiddle(){
 
   const overlay = document.createElement("div");
   overlay.className = "overlay";
+
   overlay.innerHTML = `
     <div>
       Before me, chaos.<br>
       After me, silence.<br><br>
       What am I?<br><br>
-      <a href="https://en.wikipedia.org/wiki/Point_(typography)" 
-         target="_blank" 
+
+      <a href="https://en.wikipedia.org/wiki/Point_(typography)"
+         target="_blank"
          class="goto">
          →
       </a>
+
+      <a href="history.html" class="history">
+        History of .
+      </a>
+
     </div>
   `;
+
   document.body.appendChild(overlay);
 }
 
