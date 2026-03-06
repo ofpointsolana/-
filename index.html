@@ -1,155 +1,255 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>.</title>
 
-<meta name="description" content="." />
-<meta property="og:title" content="." />
-<meta property="og:description" content="." />
-<meta property="og:type" content="website" />
+<meta name="description" content=".">
+<meta property="og:title" content=".">
+<meta property="og:description" content=".">
+<meta property="og:type" content="website">
 
 <style>
 :root{
   --bg:#ffffff;
   --fg:#000000;
-
-  /* dot transform vars */
-  --x:0px; --y:0px; --s:1; --r:0deg;
+  --x:0px;
+  --y:0px;
+  --s:1;
+  --r:0deg;
 }
 
-html,body{
+html, body{
   margin:0;
-  width:100vw; height:100vh;
+  width:100vw;
+  height:100vh;
   background:var(--bg);
   overflow:hidden;
 }
 
 body{
   display:block;
-  transition: background .25s ease;
+  transition:background .25s ease;
   -webkit-tap-highlight-color: transparent;
+  font-family: monospace;
 }
 
 /* MAIN DOT */
 .dot{
   position:fixed;
-  left:50%; top:50%;
-  width:32px; height:32px;
+  left:50%;
+  top:50%;
+  width:32px;
+  height:32px;
   background:var(--fg);
   border-radius:50%;
-  cursor: crosshair;
-  transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(var(--s)) rotate(var(--r));
-  transition: transform .12s ease, background .25s ease;
-  touch-action: manipulation;
+  cursor:crosshair;
+  transform:translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(var(--s)) rotate(var(--r));
+  transition:transform .12s ease, background .25s ease;
+  touch-action:manipulation;
+  z-index:20;
 }
 
 /* PROGRESS BAR */
 .progress{
   position:fixed;
-  bottom:0; left:0;
+  left:0;
+  bottom:0;
   width:100%;
   height:4px;
-  z-index: 10;
+  z-index:100;
 }
+
 .progress > div{
   width:0%;
   height:100%;
   background:var(--fg);
-  transition: width .08s linear, background .25s ease;
+  transition:width .08s linear, background .25s ease;
 }
 
 /* RESOURCE DOTS */
 .resources{
   position:fixed;
-  left:0; right:0;
+  left:0;
+  right:0;
   bottom:10px;
   display:flex;
   justify-content:space-between;
   padding:0 14px;
-  z-index: 9;
+  z-index:10;
   pointer-events:none;
 }
+
 .res-dot{
-  width:10px; height:10px;
+  width:10px;
+  height:10px;
   border-radius:50%;
   background:var(--fg);
   opacity:0.18;
   display:block;
   text-decoration:none;
   pointer-events:auto;
+  transition:opacity .2s ease, transform .15s ease;
 }
-.res-dot:hover{ opacity:0.65; }
 
-/* FINAL OVERLAY (46) */
+.res-dot:hover{
+  opacity:0.65;
+  transform:scale(1.2);
+}
+
+/* GENERIC OVERLAY */
 .overlay{
   position:fixed;
   inset:0;
   display:grid;
   place-items:center;
   padding:24px;
-  text-align:center;
   background:var(--bg);
   color:var(--fg);
-  font-family: monospace;
+  text-align:center;
   font-size:18px;
   line-height:1.6;
-  z-index: 50;
+  z-index:60;
 }
-.panel{
-  max-width: 520px;
-  width: 100%;
+
+/* DRAW GATE */
+.draw{
+  position:fixed;
+  inset:0;
+  display:none;
+  background:var(--bg);
+  z-index:50;
 }
+
+.draw.on{ display:block; }
+
+.drawCanvas{
+  width:100vw;
+  height:100vh;
+  display:block;
+  touch-action:none;
+}
+
+.pencil{
+  position:fixed;
+  top:14px;
+  right:14px;
+  width:44px;
+  height:44px;
+  border:2px solid var(--fg);
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  user-select:none;
+  color:var(--fg);
+}
+
+.drawHint{
+  position:fixed;
+  bottom:18px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:12px;
+  opacity:.45;
+  color:var(--fg);
+}
+
+/* DECOY GATE */
+.decoys{
+  position:fixed;
+  inset:0;
+  display:none;
+  background:var(--bg);
+  z-index:55;
+}
+
+.decoys.on{ display:block; }
+
+.decoy-dot{
+  position:fixed;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:var(--fg);
+  cursor:crosshair;
+  transform:translate(-50%, -50%);
+}
+
+/* FINAL 46 */
 .history{
   display:inline-block;
   margin-top:16px;
   font-size:14px;
   text-decoration:none;
   color:var(--fg);
-  opacity:0.7;
+  opacity:0.8;
 }
-.history:hover{ opacity:1; }
 
-/* HOLD DOT */
-.stage2{
-  margin-top:22px;
+.history:hover{
+  opacity:1;
+}
+
+.hold-wrap{
+  margin-top:24px;
   display:grid;
   place-items:center;
-  gap:14px;
+  gap:12px;
 }
-.holdDot{
-  width:22px; height:22px;
+
+.hold-dot{
+  width:24px;
+  height:24px;
   border-radius:50%;
   background:var(--fg);
-  opacity:0.85;
-  cursor: crosshair;
+  cursor:crosshair;
   touch-action:none;
-  box-shadow: 0 0 0 rgba(0,0,0,0);
-  animation: breathe 1.25s infinite;
+  animation:holdPulse 1.2s infinite;
 }
-.holdDot.holding{
-  animation:none;
-  box-shadow: 0 0 18px rgba(0,0,0,0.22);
-  transform: scale(1.06);
-}
-@keyframes breathe{
-  0%{ transform: scale(1); opacity:0.85; box-shadow: 0 0 0 rgba(0,0,0,0); }
-  50%{ transform: scale(1.12); opacity:1; box-shadow: 0 0 18px rgba(0,0,0,0.18); }
-  100%{ transform: scale(1); opacity:0.85; box-shadow: 0 0 0 rgba(0,0,0,0); }
-}
-.micro{ font-size:12px; opacity:0.28; }
 
-/* MATRIX SCREEN */
+.hold-dot.holding{
+  animation:none;
+  transform:scale(1.08);
+  box-shadow:0 0 18px rgba(0,0,0,0.22);
+}
+
+@keyframes holdPulse{
+  0%{
+    transform:scale(1);
+    opacity:0.85;
+    box-shadow:0 0 0 rgba(0,0,0,0);
+  }
+  50%{
+    transform:scale(1.12);
+    opacity:1;
+    box-shadow:0 0 18px rgba(0,0,0,0.18);
+  }
+  100%{
+    transform:scale(1);
+    opacity:0.85;
+    box-shadow:0 0 0 rgba(0,0,0,0);
+  }
+}
+
+.micro{
+  font-size:12px;
+  opacity:.28;
+}
+
+/* MATRIX / CHOSEN SCREEN */
 .matrix{
   position:fixed;
   inset:0;
   display:none;
   background:#000;
-  z-index: 60;
+  z-index:80;
   overflow:hidden;
 }
-.matrix.on{ display:block; }
+
+.matrix.on{
+  display:block;
+}
 
 .matrixCanvas{
   position:absolute;
@@ -166,24 +266,53 @@ body{
   place-items:center;
   padding:24px;
   text-align:center;
-  font-family: monospace;
   color:#fff;
 }
 
 .card{
-  max-width: 560px;
+  max-width:560px;
   width:100%;
 }
 
-.big{ font-size:22px; letter-spacing:0.5px; }
-.sub{ margin-top:10px; font-size:13px; opacity:0.75; }
+.big{
+  font-size:22px;
+  letter-spacing:.5px;
+}
+
+.sub{
+  margin-top:10px;
+  font-size:13px;
+  opacity:.75;
+}
+
+.badgeWrap{
+  margin-top:18px;
+  display:grid;
+  place-items:center;
+}
+
+.badge{
+  width:120px;
+  height:120px;
+  border-radius:16px;
+  overflow:hidden;
+  border:2px solid rgba(255,255,255,.65);
+  background:#111;
+}
+
+.badge img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
 
 .reveal{
   margin-top:18px;
   font-size:14px;
-  opacity:0.9;
-  word-break: break-all;
-  border:1px solid rgba(255,255,255,0.28);
+  opacity:.92;
+  word-break:break-all;
+  border:1px solid rgba(255,255,255,.28);
   padding:10px 12px;
   border-radius:12px;
   display:inline-block;
@@ -191,10 +320,6 @@ body{
 
 .actions{
   margin-top:14px;
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  flex-wrap:wrap;
 }
 
 .btn{
@@ -205,31 +330,22 @@ body{
   border:2px solid #fff;
   padding:10px 14px;
   border-radius:10px;
-  transition: transform .12s ease, background .2s ease, color .2s ease;
+  transition:transform .12s ease, background .2s ease, color .2s ease;
 }
-.btn:active{ transform: scale(0.98); }
-.btn:hover{ background:#fff; color:#000; }
 
-/* small “badge image” */
-.badgeWrap{ margin-top:18px; display:grid; place-items:center; }
-.badge{
-  width:120px; height:120px;
-  border-radius:16px;
-  overflow:hidden;
-  border:2px solid rgba(255,255,255,0.65);
-  background:#111;
+.btn:hover{
+  background:#fff;
+  color:#000;
 }
-.badge img{
-  width:100%; height:100%;
-  object-fit:cover;
-  display:block;
+
+.btn:active{
+  transform:scale(.98);
 }
 </style>
 </head>
 
 <body>
 
-<!-- resource dots: TG / GH / PUMP (update pump when ready) -->
 <div class="resources">
   <a class="res-dot" href="https://t.me/ofpointsolana" target="_blank" rel="noopener noreferrer"></a>
   <a class="res-dot" href="https://github.com/ofpointsolana/ofpointsolana" target="_blank" rel="noopener noreferrer"></a>
@@ -242,36 +358,41 @@ body{
   <div id="bar"></div>
 </div>
 
-<!-- MATRIX SCREEN -->
+<div class="draw" id="draw">
+  <canvas class="drawCanvas" id="drawCanvas"></canvas>
+  <div class="pencil" id="pencil">✎</div>
+  <div class="drawHint">.</div>
+</div>
+
+<div class="decoys" id="decoys"></div>
+
 <div class="matrix" id="matrix">
   <canvas class="matrixCanvas" id="matrixCanvas"></canvas>
 
   <div class="matrixCenter">
     <div class="card">
       <div class="big">You were chosen.</div>
-      <div class="sub">Ambassador protocol: active.</div>
+      <div class="sub">Ambassador of .</div>
 
       <div class="badgeWrap">
         <div class="badge">
-          <img src="file_00000000bbdc720a88325b2f2f78b909.png" alt="." />
+          <img src="file_00000000bbdc720a88325b2f2f78b909.png" alt=".">
         </div>
       </div>
 
       <div class="reveal" id="revealBox">PUMP_LINK_HERE</div>
 
       <div class="actions">
-        <button class="btn" id="copyBtn" type="button">Copy</button>
         <a class="btn" id="shareBtn" href="#" target="_blank" rel="noopener noreferrer">Share on X</a>
       </div>
 
-      <div class="sub" style="margin-top:10px; opacity:.55;">.</div>
+      <div class="sub" style="margin-top:10px;opacity:.55;">.</div>
     </div>
   </div>
 </div>
 
 <script>
-/* ===== CONFIG ===== */
-const PUMP_LINK = "PUMP_LINK_HERE"; // replace after launch
+const PUMP_LINK = "PUMP_LINK_HERE";
 
 let count = 0;
 let flipped = false;
@@ -280,18 +401,17 @@ const maxClicks = 46;
 const dot = document.getElementById("dot");
 const bar = document.getElementById("bar");
 
-const matrix = document.getElementById("matrix");
-const shareBtn = document.getElementById("shareBtn");
-const copyBtn = document.getElementById("copyBtn");
-const revealBox = document.getElementById("revealBox");
+let gate23Done = false;
+let gate39Done = false;
+let moveMode = false;
 
-/* ---------- theme ---------- */
+/* THEME */
 function setTheme(){
   document.documentElement.style.setProperty("--bg", flipped ? "#000000" : "#ffffff");
   document.documentElement.style.setProperty("--fg", flipped ? "#ffffff" : "#000000");
 }
 
-/* ---------- micro anims ---------- */
+/* ANIMS */
 function pulse(){
   document.documentElement.style.setProperty("--s", "1.1");
   setTimeout(()=>document.documentElement.style.setProperty("--s", "1"), 90);
@@ -306,54 +426,195 @@ function glitch(){
   }, 120);
 }
 
-/* ---------- progress (for clicks) ---------- */
 function updateProgress(){
   bar.style.width = (count / maxClicks * 100) + "%";
 }
 
-/* ---------- share/copy ---------- */
-function makeShareLink(){
-  const text =
-    ".\n\n" +
-    "You were chosen.\n" +
-    "Ambassador of .\n\n" +
-    "LINK:\n" + PUMP_LINK + "\n\n" +
-    "t.me/ofpointsolana\n" +
-    "#solana";
-  const url = "https://ofpointsolana.github.io/ofpointsolana/";
-  return "https://twitter.com/intent/tweet?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(url);
+/* RANDOM */
+function rand(min, max){
+  return Math.random() * (max - min) + min;
 }
 
-copyBtn.addEventListener("click", async ()=>{
-  try{
-    await navigator.clipboard.writeText(PUMP_LINK);
-    copyBtn.textContent = "Copied";
-    setTimeout(()=>copyBtn.textContent = "Copy", 1200);
-  }catch(e){
-    // fallback
-    const ta = document.createElement("textarea");
-    ta.value = PUMP_LINK;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    ta.remove();
-    copyBtn.textContent = "Copied";
-    setTimeout(()=>copyBtn.textContent = "Copy", 1200);
+/* 13 - MOVE DOT */
+function moveDotRandom(){
+  const margin = 60;
+  const x = rand(-((window.innerWidth / 2) - margin), ((window.innerWidth / 2) - margin));
+  const y = rand(-((window.innerHeight / 2) - margin), ((window.innerHeight / 2) - margin));
+  document.documentElement.style.setProperty("--x", x.toFixed(0) + "px");
+  document.documentElement.style.setProperty("--y", y.toFixed(0) + "px");
+}
+
+/* 23 - DRAW CIRCLE */
+const draw = document.getElementById("draw");
+const drawCanvas = document.getElementById("drawCanvas");
+const pencil = document.getElementById("pencil");
+const ctx = drawCanvas.getContext("2d");
+
+let drawing = false;
+let pts = [];
+
+function resizeCanvas(){
+  const dpr = window.devicePixelRatio || 1;
+  drawCanvas.width = Math.floor(window.innerWidth * dpr);
+  drawCanvas.height = Math.floor(window.innerHeight * dpr);
+  drawCanvas.style.width = window.innerWidth + "px";
+  drawCanvas.style.height = window.innerHeight + "px";
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--fg").trim();
+}
+
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+function openDrawGate(){
+  resizeCanvas();
+  ctx.clearRect(0,0, drawCanvas.width, drawCanvas.height);
+  pts = [];
+  draw.classList.add("on");
+}
+
+function closeDrawGate(){
+  draw.classList.remove("on");
+  pts = [];
+  drawing = false;
+}
+
+function dist(a,b){
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  return Math.hypot(dx,dy);
+}
+
+function isCircle(points){
+  if(points.length < 45) return false;
+
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+  for(const p of points){
+    if(p.x < minX) minX = p.x;
+    if(p.y < minY) minY = p.y;
+    if(p.x > maxX) maxX = p.x;
+    if(p.y > maxY) maxY = p.y;
   }
+
+  const w = maxX - minX;
+  const h = maxY - minY;
+
+  if(w < 70 || h < 70) return false;
+
+  const ratio = w / h;
+  if(ratio < 0.72 || ratio > 1.28) return false;
+
+  const start = points[0];
+  const end = points[points.length - 1];
+
+  if(dist(start,end) > Math.min(w,h) * 0.38) return false;
+
+  return true;
+}
+
+function drawStart(x,y){
+  drawing = true;
+  pts = [{x,y}];
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+}
+
+function drawMove(x,y){
+  if(!drawing) return;
+  pts.push({x,y});
+  ctx.lineTo(x,y);
+  ctx.stroke();
+}
+
+function drawEnd(){
+  if(!drawing) return;
+  drawing = false;
+
+  if(isCircle(pts)){
+    gate23Done = true;
+    closeDrawGate();
+    glitch();
+  }else{
+    ctx.clearRect(0,0, drawCanvas.width, drawCanvas.height);
+    pts = [];
+  }
+}
+
+drawCanvas.addEventListener("pointerdown", (e)=>{
+  e.preventDefault();
+  drawStart(e.clientX, e.clientY);
 });
 
-/* ---------- FINAL OVERLAY + HOLD ---------- */
+drawCanvas.addEventListener("pointermove", (e)=>{
+  e.preventDefault();
+  drawMove(e.clientX, e.clientY);
+});
+
+drawCanvas.addEventListener("pointerup", (e)=>{
+  e.preventDefault();
+  drawEnd();
+});
+
+drawCanvas.addEventListener("pointercancel", (e)=>{
+  e.preventDefault();
+  drawEnd();
+});
+
+pencil.addEventListener("click", ()=>{
+  ctx.clearRect(0,0, drawCanvas.width, drawCanvas.height);
+  pts = [];
+});
+
+/* 39 - DECOYS */
+const decoys = document.getElementById("decoys");
+let realDecoyId = null;
+
+function openDecoysGate(){
+  decoys.innerHTML = "";
+  decoys.classList.add("on");
+
+  const total = 10;
+  realDecoyId = Math.floor(Math.random() * total);
+
+  for(let i=0;i<total;i++){
+    const d = document.createElement("div");
+    d.className = "decoy-dot";
+    d.style.left = rand(10, 90) + "vw";
+    d.style.top = rand(10, 85) + "vh";
+    d.dataset.i = String(i);
+
+    d.addEventListener("click", ()=>{
+      if(Number(d.dataset.i) === realDecoyId){
+        gate39Done = true;
+        decoys.classList.remove("on");
+        decoys.innerHTML = "";
+        moveDotRandom();
+        glitch();
+      }else{
+        openDecoysGate();
+      }
+    });
+
+    decoys.appendChild(d);
+  }
+}
+
+/* 46 - FINAL */
 let overlayEl = null;
 let holdActive = false;
 let holdStart = 0;
 let holdRAF = null;
 
-function showFinalOverlay(){
+function showFinal(){
   dot.style.display = "none";
   document.querySelector(".resources").style.display = "none";
 
   overlayEl = document.createElement("div");
   overlayEl.className = "overlay";
+
   overlayEl.innerHTML = `
     <div class="panel">
       <div>
@@ -364,15 +625,15 @@ function showFinalOverlay(){
 
       <a href="history.html" class="history">History of .</a>
 
-      <div class="stage2">
-        <div class="holdDot" id="holdDot" title="."></div>
+      <div class="hold-wrap">
+        <div class="hold-dot" id="holdDot"></div>
         <div class="micro">.</div>
       </div>
     </div>
   `;
+
   document.body.appendChild(overlayEl);
 
-  // use bottom bar as hold timer
   document.querySelector(".progress").style.display = "block";
   bar.style.width = "0%";
 
@@ -380,6 +641,7 @@ function showFinalOverlay(){
   attachHoldLogic(holdDot);
 }
 
+/* HOLD 5s */
 function attachHoldLogic(el){
   const HOLD_MS = 5000;
 
@@ -391,7 +653,7 @@ function attachHoldLogic(el){
     loop();
   }
 
-  function endHold(){
+  function stopHold(){
     if(!holdActive) return;
     holdActive = false;
     el.classList.remove("holding");
@@ -401,8 +663,8 @@ function attachHoldLogic(el){
 
   function loop(){
     if(!holdActive) return;
-    const t = performance.now();
-    const p = Math.min((t - holdStart) / HOLD_MS, 1);
+
+    const p = Math.min((performance.now() - holdStart) / HOLD_MS, 1);
     bar.style.width = (p * 100).toFixed(1) + "%";
 
     if(p >= 1){
@@ -412,19 +674,22 @@ function attachHoldLogic(el){
       setTimeout(()=>launchMatrix(), 120);
       return;
     }
+
     holdRAF = requestAnimationFrame(loop);
   }
 
   el.addEventListener("pointerdown", startHold, {passive:false});
-  el.addEventListener("pointerup", endHold, {passive:true});
-  el.addEventListener("pointercancel", endHold, {passive:true});
-  el.addEventListener("pointerleave", endHold, {passive:true});
+  el.addEventListener("pointerup", stopHold, {passive:true});
+  el.addEventListener("pointercancel", stopHold, {passive:true});
+  el.addEventListener("pointerleave", stopHold, {passive:true});
 }
 
-/* ---------- MATRIX EFFECT (monochrome) ---------- */
+/* MATRIX SCREEN */
+const matrix = document.getElementById("matrix");
 const matrixCanvas = document.getElementById("matrixCanvas");
 const mctx = matrixCanvas.getContext("2d");
-let mRAF = null;
+const shareBtn = document.getElementById("shareBtn");
+const revealBox = document.getElementById("revealBox");
 
 function resizeMatrix(){
   const dpr = window.devicePixelRatio || 1;
@@ -434,7 +699,21 @@ function resizeMatrix(){
   matrixCanvas.style.height = window.innerHeight + "px";
   mctx.setTransform(dpr,0,0,dpr,0,0);
 }
+
 window.addEventListener("resize", resizeMatrix);
+
+function makeShareLink(){
+  const text =
+    ".\n\n" +
+    "You were chosen.\n" +
+    "Ambassador of .\n\n" +
+    PUMP_LINK + "\n\n" +
+    "t.me/ofpointsolana\n" +
+    "#solana";
+
+  const url = "https://ofpointsolana.github.io/ofpointsolana/";
+  return "https://twitter.com/intent/tweet?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(url);
+}
 
 function launchMatrix(){
   if(overlayEl) overlayEl.remove();
@@ -443,7 +722,6 @@ function launchMatrix(){
   matrix.classList.add("on");
   resizeMatrix();
 
-  // fill reveal + share
   revealBox.textContent = PUMP_LINK;
   shareBtn.href = makeShareLink();
 
@@ -460,27 +738,26 @@ function launchMatrix(){
     mctx.font = fontSize + "px monospace";
 
     for(let i=0;i<drops.length;i++){
-      const text = chars[Math.floor(Math.random()*chars.length)];
-      mctx.fillText(text, i*fontSize, drops[i]*fontSize);
+      const text = chars[Math.floor(Math.random() * chars.length)];
+      mctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-      if(drops[i]*fontSize > window.innerHeight && Math.random() > 0.975){
+      if(drops[i] * fontSize > window.innerHeight && Math.random() > 0.975){
         drops[i] = 0;
       }
+
       drops[i]++;
     }
 
-    mRAF = requestAnimationFrame(step);
+    requestAnimationFrame(step);
   }
-
-  // quick contrast “glitch”
-  document.body.style.filter = "contrast(140%)";
-  setTimeout(()=>document.body.style.filter = "", 180);
 
   step();
 }
 
-/* ---------- MAIN CLICK FLOW (simple) ---------- */
+/* MAIN CLICK */
 dot.addEventListener("click", ()=>{
+  if(draw.classList.contains("on")) return;
+  if(decoys.classList.contains("on")) return;
   if(matrix.classList.contains("on")) return;
 
   count++;
@@ -492,12 +769,37 @@ dot.addEventListener("click", ()=>{
     setTheme();
   }
 
+  if(count === 13){
+    moveMode = true;
+    moveDotRandom();
+  }
+
+  if(moveMode && count >= 13 && count < 23){
+    moveDotRandom();
+  }
+
   if(count === 23){
-    glitch();
+    if(!gate23Done){
+      openDrawGate();
+      count = 22;
+      updateProgress();
+      return;
+    }else{
+      glitch();
+    }
+  }
+
+  if(count === 39){
+    if(!gate39Done){
+      openDecoysGate();
+      count = 38;
+      updateProgress();
+      return;
+    }
   }
 
   if(count === 46){
-    showFinalOverlay();
+    showFinal();
   }
 });
 
@@ -505,4 +807,4 @@ setTheme();
 </script>
 
 </body>
-          </html>
+  </html>
