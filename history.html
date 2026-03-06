@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>History of .</title>
 
 <style>
@@ -21,7 +21,7 @@ body{
 }
 
 h1{
-  font-size:64px;
+  font-size:72px;
   margin-bottom:40px;
 }
 
@@ -32,26 +32,27 @@ p{
   font-size:16px;
 }
 
-/* wikipedia arrow */
 .wiki{
   display:inline-block;
-  margin-top:36px;
+  margin-top:40px;
   font-size:32px;
   text-decoration:none;
   color:var(--fg);
   border:2px solid var(--fg);
   padding:6px 18px;
   border-radius:8px;
+  transition:all .2s ease;
 }
+
 .wiki:hover{
   background:var(--fg);
   color:var(--bg);
 }
 
-/* resource dots */
 .links{
-  margin-top:70px;
+  margin-top:80px;
 }
+
 .links a{
   width:12px;
   height:12px;
@@ -59,9 +60,14 @@ p{
   border-radius:50%;
   display:inline-block;
   margin:0 14px;
-  opacity:0.3;
+  opacity:0.25;
+  transition:opacity .2s ease, transform .15s ease;
 }
-.links a:hover{ opacity:0.8; }
+
+.links a:hover{
+  opacity:0.8;
+  transform:scale(1.25);
+}
 </style>
 </head>
 
@@ -79,9 +85,11 @@ The point created silence.
 </p>
 
 <a class="wiki"
-   href="https://en.wikipedia.org/wiki/Point_(typography)"
-   target="_blank"
-   rel="noopener noreferrer">→</a>
+href="https://en.wikipedia.org/wiki/Point_(typography)"
+target="_blank"
+rel="noopener noreferrer">
+→
+</a>
 
 <div class="links">
   <a href="PUMP_LINK_HERE" target="_blank" rel="noopener noreferrer"></a>
@@ -90,4 +98,4 @@ The point created silence.
 </div>
 
 </body>
-</html>
+  </html>
